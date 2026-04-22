@@ -67,3 +67,16 @@ def put(id:int, request:schemas.Blog, db: Session = Depends(get_db) ):
         raise HTTPException(status_code=status.HTTP_304_NOT_MODIFIED, detail='nothing has happened')
         
     return 'updated succesflly'
+
+
+
+
+@app.post('/user' )
+def create_user(request: schemas.User, db: Session = Depends(get_db)):
+    
+    new_user = models.User(name =request.name, email = request.email, password=request.password)
+    db.add(new_user)
+    db.commit()
+    
+    db.refresh(new_user)
+    return new_user
