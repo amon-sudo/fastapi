@@ -1,6 +1,5 @@
 from urllib import response
 
-from certifi import where
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from sentry_sdk import session
 from . import schemas,  models
@@ -42,7 +41,7 @@ def all(db: Session = Depends(get_db)):
     return blogs
 
 
-@app.get('/blogs/{id}', status_code=200)
+@app.get('/blogs/{id}', status_code=200, response_model=schemas.Blog)
 def one(id: int, response: Response,db: Session = Depends(get_db) ):
     
     blogs = db.query(models.Blog).filter(models.Blog.id == id).first()
@@ -59,4 +58,11 @@ def delete(id: int, db: Session = Depends(get_db)):
     db.commit()
     return 'done'
     
-    
+@app.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED) 
+def put(id:int, request:schemas.Blog, db: Session = Depends(get_db) ):
+    nn = db.query(models.Blog).filter(models.Blog.id == id).update(request.model_dump())
+    db.commit()
+    if not nn:
+        raise HTTPException(status_code=status.HTTP_304_NOT_MODIFIED, detail='nothing has happened')
+        
+    return 'updated succesflly'
