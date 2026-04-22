@@ -44,3 +44,4 @@ websockets==16.0
 
 fastAPI
 uvicorn
+passlib

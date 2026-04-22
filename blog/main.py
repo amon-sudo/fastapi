@@ -1,10 +1,13 @@
+import re
 from typing import List
 from urllib import response
 
+from dns import query
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from sentry_sdk import session
-from . import schemas,  models
+from . import schemas,  models, hashing
 from sqlalchemy.orm import Session
+from passlib.context import CryptContext
 
 from .database import engine, sessionLocal
 import blog
@@ -71,12 +74,21 @@ def put(id:int, request:schemas.Blog, db: Session = Depends(get_db) ):
 
 
 
-@app.post('/user' )
+@app.post('/user', response_model=schemas.User1)
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
-    
-    new_user = models.User(name =request.name, email = request.email, password=request.password)
+
+    new_user = models.User(name =request.name, email = request.email, password=hashing.Hash.bcrypt(request.password))
     db.add(new_user)
     db.commit()
     
     db.refresh(new_user)
     return new_user
+
+
+@app.get('/user/{id}', response_model=schemas.User1)
+def get_user(id:int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    
+    if not user:
+        raise HTTPException(status_code = 404, detail=f'the user with this if {id} is not found')
+    return user
