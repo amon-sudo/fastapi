@@ -41,7 +41,7 @@ def all(db: Session = Depends(get_db)):
     return blogs
 
 
-@app.get('/blogs/{id}', status_code=200, response_model=schemas.Blog)
+@app.get('/blogs/{id}', status_code=200, response_model=schemas.Amon)
 def one(id: int, response: Response,db: Session = Depends(get_db) ):
     
     blogs = db.query(models.Blog).filter(models.Blog.id == id).first()

@@ -10,6 +10,7 @@ class Blog(BaseModel):
     body: str
 
 
-class Amon(Blog):
+class Amon(BaseModel):
+    title: str
     class Config():
         orm_mode = True
