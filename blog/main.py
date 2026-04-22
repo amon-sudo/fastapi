@@ -26,7 +26,7 @@ def get_db():
         db.close()
 
 
-@app.post('/blog', status_code=status.HTTP_201_CREATED)
+@app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['blogs'])
 def create(request: schemas.Blog, db: Session = Depends(get_db)):
     new_blog = models.Blog(title=request.title, body = request.body)
     db.add(new_blog)
@@ -36,7 +36,7 @@ def create(request: schemas.Blog, db: Session = Depends(get_db)):
     return new_blog
 
 
-@app.get('/blog', response_model=List[schemas.Amon])
+@app.get('/blog', response_model=List[schemas.Amon], tags=['blogs'])
 def all(db: Session = Depends(get_db)):
     
     blogs = db.query(models.Blog).all()
@@ -45,7 +45,7 @@ def all(db: Session = Depends(get_db)):
     return blogs
 
 
-@app.get('/blogs/{id}', status_code=200, response_model=schemas.Amon)
+@app.get('/blogs/{id}', status_code=200, response_model=schemas.Amon, tags=['blogs'])
 def one(id: int, response: Response,db: Session = Depends(get_db) ):
     
     blogs = db.query(models.Blog).filter(models.Blog.id == id).first()
@@ -56,13 +56,13 @@ def one(id: int, response: Response,db: Session = Depends(get_db) ):
     return blogs
 
 
-@app.delete('/blog/{id}',status_code=status.HTTP_204_NO_CONTENT )
+@app.delete('/blog/{id}',status_code=status.HTTP_204_NO_CONTENT, tags=['blogs'] )
 def delete(id: int, db: Session = Depends(get_db)):
     db.query(models.Blog).filter(models.Blog.id == id).delete(synchronize_session=False)
     db.commit()
     return 'done'
     
-@app.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED) 
+@app.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['blogs']) 
 def put(id:int, request:schemas.Blog, db: Session = Depends(get_db) ):
     nn = db.query(models.Blog).filter(models.Blog.id == id).update(request.model_dump())
     db.commit()
@@ -74,7 +74,7 @@ def put(id:int, request:schemas.Blog, db: Session = Depends(get_db) ):
 
 
 
-@app.post('/user', response_model=schemas.User1)
+@app.post('/user', response_model=schemas.User1, tags=['user'])
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
 
     new_user = models.User(name =request.name, email = request.email, password=hashing.Hash.bcrypt(request.password))
@@ -85,7 +85,7 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
     return new_user
 
 
-@app.get('/user/{id}', response_model=schemas.User1)
+@app.get('/user/{id}', response_model=schemas.User1, tags=['user'])
 def get_user(id:int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     
