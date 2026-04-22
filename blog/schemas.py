@@ -11,13 +11,7 @@ class Blog(BaseModel):
     body: str
 
 
-class Amon(BaseModel):
-    title: str
-    body: str
-    class Config():
-        orm_mode = True
-        
-        
+  
         
 class User(BaseModel):
     name: str
@@ -32,3 +26,13 @@ class User1(BaseModel):
     
     class Config():
         orm_mode = True
+        
+        
+class Amon(BaseModel):
+    title: str
+    body: str
+    creator: User1
+    class Config():
+        orm_mode = True
+        
+      
