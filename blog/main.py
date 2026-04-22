@@ -1,3 +1,4 @@
+from typing import List
 from urllib import response
 
 from fastapi import FastAPI, Depends, status, Response, HTTPException
@@ -32,7 +33,7 @@ def create(request: schemas.Blog, db: Session = Depends(get_db)):
     return new_blog
 
 
-@app.get('/blog')
+@app.get('/blog', response_model=List[schemas.Amon])
 def all(db: Session = Depends(get_db)):
     
     blogs = db.query(models.Blog).all()

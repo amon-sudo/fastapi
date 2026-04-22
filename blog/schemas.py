@@ -12,5 +12,6 @@ class Blog(BaseModel):
 
 class Amon(BaseModel):
     title: str
+    body: str
     class Config():
         orm_mode = True
