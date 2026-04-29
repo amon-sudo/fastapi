@@ -11,7 +11,7 @@ from blog.routers import user
 from . import schemas,  models, hashing
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from .routers import blog, user
+from .routers import blog, user, authentication
 
 from .database import engine, sessionLocal, get_db
 
@@ -23,78 +23,4 @@ models.Base.metadata.create_all(engine)
 
 app.include_router(blog.router)
 app.include_router(user.router)
-# def get_db():
-#     db = sessionLocal()
-#     try:
-#         yield db
-        
-#     finally:
-#         db.close()
-
-
-# @app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['blogs'])
-# def create(request: schemas.Blog, db: Session = Depends(get_db)):
-#     new_blog = models.Blog(title=request.title, body = request.body)
-#     db.add(new_blog)
-#     db.commit()
-#     db.refresh(new_blog)
-    
-#     return new_blog
-
-
-# # @app.get('/blog', response_model=List[schemas.Amon], tags=['blogs'])
-# # def all(db: Session = Depends(get_db)):
-    
-# #     blogs = db.query(models.Blog).all()
-    
-    
-# #     return blogs
-
-
-# @app.get('/blogs/{id}', status_code=200, response_model=schemas.Amon, tags=['blogs'])
-# def one(id: int, response: Response,db: Session = Depends(get_db) ):
-    
-#     blogs = db.query(models.Blog).filter(models.Blog.id == id).first()
-#     if not blogs:
-#         raise HTTPException(status_code = 404, detail=f'the blog with this if {id} is not found')
-#         # response.status_code = status.HTTP_404_NOT_FOUND
-#         # return {'error': f'this blog was not found with id {id}'}
-#     return blogs
-
-
-# @app.delete('/blog/{id}',status_code=status.HTTP_204_NO_CONTENT, tags=['blogs'] )
-# def delete(id: int, db: Session = Depends(get_db)):
-#     db.query(models.Blog).filter(models.Blog.id == id).delete(synchronize_session=False)
-#     db.commit()
-#     return 'done'
-    
-# @app.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['blogs']) 
-# def put(id:int, request:schemas.Blog, db: Session = Depends(get_db) ):
-#     nn = db.query(models.Blog).filter(models.Blog.id == id).update(request.model_dump())
-#     db.commit()
-#     if not nn:
-#         raise HTTPException(status_code=status.HTTP_304_NOT_MODIFIED, detail='nothing has happened')
-        
-#     return 'updated succesflly'
-
-
-
-
-# @app.post('/user', response_model=schemas.User1, tags=['user'])
-# def create_user(request: schemas.User, db: Session = Depends(get_db)):
-
-#     new_user = models.User(name =request.name, email = request.email, password=hashing.Hash.bcrypt(request.password))
-#     db.add(new_user)
-#     db.commit()
-    
-#     db.refresh(new_user)
-#     return new_user
-
-
-# @app.get('/user/{id}', response_model=schemas.User1, tags=['user'])
-# def get_user(id:int, db: Session = Depends(get_db)):
-#     user = db.query(models.User).filter(models.User.id == id).first()
-    
-#     if not user:
-#         raise HTTPException(status_code = 404, detail=f'the user with this if {id} is not found')
-#     return user
+app.include_router(authentication.router)

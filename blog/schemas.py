@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 
-
+from typing import List
 
 
 
@@ -22,6 +22,7 @@ class User(BaseModel):
 class User1(BaseModel):
     name: str
     email:str
+    blogs : List[Blog] = []
     
     
     class Config():
@@ -35,4 +36,6 @@ class Amon(BaseModel):
     class Config():
         orm_mode = True
         
-      
+class Login(BaseModel):
+     username: str
+     password: str
