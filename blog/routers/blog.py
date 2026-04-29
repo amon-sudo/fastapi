@@ -3,6 +3,7 @@ from .. import models, schemas, database
 from typing import List
 from sqlalchemy.orm import Session
 from ..repositories import blog
+from ..oauth2 import get_current_user
 
 router =  APIRouter(
     prefix='/blogs',
@@ -19,18 +20,8 @@ def all(db: Session = Depends(get_db)):
 def create(request: schemas.Blog, db: Session = Depends(get_db)):
     return blog.create(request, db)
 
-
-# @router.get( response_model=List[schemas.Amon])
-# def all(db: Session = Depends(get_db)):
-    
-#     blogs = db.query(models.Blog).all()
-    
-    
-#     return blogs
-
-
 @router.get('/{id}', status_code=200, response_model=schemas.Amon)
-def one(id: int, response: Response,db: Session = Depends(get_db) ):
+def one(id: int, response: Response,db: Session = Depends(get_db)):
     return blog.one(id, db)
 
 
